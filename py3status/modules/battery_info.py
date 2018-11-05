@@ -4,7 +4,8 @@ Display battery information.
 
 Configuration parameters:
     battery_id: id of the battery to be displayed
-        set to 'all' for combined display of all batteries
+        set to 'all' for combined display of all laptop batteries
+        set to 'any' for combined display of all batteries
         (default 0)
     blocks: a string, where each character represents battery level
         especially useful when using icon fonts (e.g. FontAwesome)
@@ -54,18 +55,21 @@ Format placeholders:
         an alternative visualization to '{icon}' option
     {icon} - a character representing the battery level,
         as defined by the 'blocks' and 'charging_character' parameters
-    {percent} - the remaining battery percentage (previously '{}')
-    {time_remaining} - the remaining time until the battery is empty
+    {percent} - the remaining battery percentage
+    {percent_design} - the remaining battery percentage based on its design
+        capacity
+    {time_remaining} - the remaining time until the battery is empty or fully
+        charged if charging
+    {empty_time} - the time battery will be empty or fully charged if charging
+    {uevent} - other uevent data
+    {drain_rate} - the rate of discharge if discharging, or rate of charge if
+        charging. Unit is W.
 
 Color options:
     color_bad: Battery level is below threshold_bad
     color_charging: Battery is charging (default "#FCE94F")
     color_degraded: Battery level is below threshold_degraded
     color_good: Battery level is above thresholds
-
-Requires:
-    - the `acpi` command line utility (only if
-        `measurement_mode='acpi'`)
 
 @author shadowprince, AdamBSteele, maximbaz, 4iar, m45t3r
 @license Eclipse Public License
@@ -84,7 +88,7 @@ import os
 from unittest.mock import Mock
 
 BLOCKS = u"_▁▂▃▄▅▆▇█"
-FA_BLOCKS = u""
+FA_BLOCKS = u""
 CHARGING_CHARACTER = u"⚡"
 EMPTY_BLOCK_CHARGING = u"|"
 EMPTY_BLOCK_DISCHARGING = u"⍀"
@@ -93,7 +97,7 @@ FORMAT = "{icon}"
 FORMAT_NOTIFY_CHARGING = "Charging ({percent}%)"
 FORMAT_NOTIFY_DISCHARGING = "{time_remaining}"
 SYS_BATTERY_PATH = "/sys/class/power_supply/"
-FULLY_CHARGED = "?"
+FULLY_CHARGED = "OK"
 DEFAULT_BATTERY_ID = "BAT0"
 
 
